@@ -9,6 +9,16 @@ export default {
 		// ******************************
 		// Series
 		// ******************************
+		getDateFromYMD(date) {
+			date = (date.split(' ')[0]).split('-');
+			let { y, m, d } = {
+				y: date[0],
+				m: date[1],
+				d: date[2]
+			}
+
+			return this.dateOnly(new Date(y, m, d));
+		},
 
 		today() {
 			return this.dateOnly(new Date())
@@ -172,40 +182,52 @@ export default {
 			// http://stackoverflow.com/questions/492994/compare-two-dates-with-javascript
 			return this.dayDiff(d1, d2) === 0
 		},
+		
 		isSameDateTime(d1, d2) {
 			return d1.getTime() === d2.getTime()
 		},
+
 		isSameMonth(d1, d2) {
 			return (
 				d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth()
 			)
 		},
 
-		isPastMonth(d) {
+		isMonth(d) {
 			return this.beginningOfMonth(d) < this.beginningOfMonth(this.today())
 		},
+
 		isFutureMonth(d) {
 			return this.beginningOfMonth(d) > this.beginningOfMonth(this.today())
 		},
 
-		isInFuture(d) {
-			return this.dateOnly(d) > this.today()
+		isInFuture(d, date = this.today()) {
+			if(typeof date === "string") 
+				date = this.getDateFromYMD(date);
+			return this.dateOnly(d) > date
 		},
-		isInPast(d) {
-			return this.dateOnly(d) < this.today()
+
+		isInPast(d, date = this.today()) {
+			if(typeof date === "string") 
+				date = this.getDateFromYMD(date);
+			return this.dateOnly(d) < date
 		},
+
 		isLastInstanceOfMonth(d) {
 			return d.getMonth() !== this.addDays(d, 7).getMonth()
 		},
+
 		isLastDayOfMonth(d) {
 			return d.getMonth() !== this.addDays(d, 1).getMonth()
 		},
+
 		isSelectedDay(d) {
 			var day = Object.keys(this.dateClasses).find(day =>
 				this.isSameDate(this.fromIsoStringToLocalDate(day), d)
 			)
 			return day ? this.dateClasses[day] : undefined
 		},
+
 		// Courtesy https://stackoverflow.com/questions/33908299/javascript-parse-a-string-to-date-as-local-time-zone/42626876#42626876
 		fromIsoStringToLocalDate(s) {
 			let ds = s.split(/\D/).map(s => Number(s))

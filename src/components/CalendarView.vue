@@ -112,8 +112,10 @@ export default {
 		weekdayNameFormat: { type: String, default: "short" },
 		showEventTimes: { type: Boolean, default: false },
 		timeFormatOptions: { type: Object, default: () => {} },
+		
 		disablePast: { type: Boolean, default: false },
 		disableFuture: { type: Boolean, default: false },
+		
 		enableDragDrop: { type: Boolean, default: false },
 		startingDayOfWeek: { type: Number, default: 0 },
 		events: { type: Array, default: () => [] },
@@ -125,6 +127,9 @@ export default {
 		currentPeriodLabel: { type: String, default: "" },
 		currentPeriodLabelIcons: { type: String, default: "⇤-⇥" },
 		doEmitItemMouseEvents: { type: Boolean, default: false },
+		
+		minDate: {type: String, default: ""},
+		maxDate: {type: String, default: ""}
 	},
 
 	data: () => ({
@@ -319,8 +324,14 @@ export default {
 		// ******************************
 
 		onClickDay(day, windowEvent) {
-			if (this.disablePast && this.isInPast(day)) return
-			if (this.disableFuture && this.isInFuture(day)) return
+			if(minDate == maxDate == "") {
+				if (this.disablePast && this.isInPast(day)) return
+				if (this.disableFuture && this.isInFuture(day)) return
+			} else {
+				if (this.disablePast && this.isInPast(day, this.minDate)) return
+				if (this.disableFuture && this.isInFuture(day, this.maxDate)) return
+			}
+
 			this.$emit("click-date", day, windowEvent)
 		},
 
